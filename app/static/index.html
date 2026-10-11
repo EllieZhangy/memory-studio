@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Memory Studio · 把回忆留在纸上</title><link rel="stylesheet" href="/static/style.css"></head>
+<body>
+<header><a class="brand" href="/">memory<span>studio</span><i>✳</i></a><span class="edition">A LITTLE MOMENT, A LITTLE ART.</span></header>
+<main>
+<section class="intro"><div><p class="eyebrow">PHOTO → PAPER → KEEPSAKE</p><h1>把回忆，<br>留在<span>纸上。</span></h1><p class="subtitle">一张照片，一种风格，一份值得收藏的小小回忆。<br>Turn your everyday moments into artful keepsakes.</p></div><div class="sample"><img src="/static/example.png" alt="人物与狗狗的旅行回忆贴纸卡示例"><span>MY FAVORITE TRAVEL BUDDY ↗</span></div></section>
+<section class="workspace">
+<form id="form">
+<div class="step"><span>01</span><h2>选一张照片 <small>Your moment</small></h2></div>
+<label id="drop" class="drop"><input id="image" type="file" accept="image/png,image/jpeg,image/webp" required><img id="preview" alt="你的照片预览" hidden><div id="upload-copy"><b>＋</b><strong>点击上传，或把照片拖到这里</strong><span>JPG / PNG / WebP · 最大 15 MB</span></div></label>
+<div class="step"><span>02</span><h2>选一种风格 <small>Your paper world</small></h2></div>
+<div id="styles" class="styles" role="radiogroup" aria-label="海报风格"></div>
+<label class="title-label" for="title">给回忆起个名字 <small>OPTIONAL TITLE</small></label><input id="title" name="title" maxlength="100" placeholder="My Favorite Travel Buddy" value="My Favorite Travel Buddy">
+<button class="generate" id="generate" type="submit">生成我的海报 <span>MAKE A KEEPSAKE ↗</span></button><p class="fine">3:4 竖版 · PNG 下载 · 生成可能需要几分钟<br>照片会发送至 OpenAI 进行处理；每次生成会产生 API 费用。</p>
+</form>
+<aside class="result"><div class="step"><span>03</span><h2>你的新收藏 <small>Your keepsake</small></h2></div><div class="result-paper" id="result-paper"><div id="empty"><span>✳</span><p>A moment waiting<br>to become a memory.</p><small>上传照片并选择风格，在这里收获新作品。</small></div><img id="result" alt="生成的海报" hidden></div><p id="status" role="status" aria-live="polite"></p><a id="download" class="download" hidden>下载 PNG ↓</a></aside>
+</section><footer>MADE FOR THE MOMENTS YOU WANT TO KEEP. <span>Memory Studio / 01</span></footer>
+</main><script src="/static/app.js" defer></script></body></html>

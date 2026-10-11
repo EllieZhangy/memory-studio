@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: memory-studio
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: POSTER_IMAGE_MODEL
+        value: gpt-image-1
+      - key: POSTER_OUTPUT_DIR
+        value: /var/data/generated
+    disk:
+      name: posters
+      mountPath: /var/data
+      sizeGB: 1
