@@ -1,6 +1,6 @@
 # Memory Studio
 
-上传照片，选择风格，生成可下载的 3:4 竖版海报。A small photo-to-poster web studio with an image-generation API.
+Upload a photo, choose a style, and generate a downloadable 3:4 portrait poster. Memory Studio is a small photo-to-poster web app with an image-generation API.
 
 ## Run locally
 
