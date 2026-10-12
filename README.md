@@ -1,40 +1,86 @@
 # Memory Studio
 
-Upload a photo, choose a style, and generate a downloadable 3:4 portrait poster. Memory Studio is a small photo-to-poster web app with an image-generation API.
+**Turn one photo into a polished 3:4 keepsake poster.**
 
-## Run locally
+`FastAPI` · `OpenAI Images` · `Pillow` · `Docker`
 
-Requires Python 3.12. From this repository:
+<p align="center">
+  <img src="outputs/my-favorite-travel-buddy-card-3x4.png" alt="Memory Studio generated travel memory sticker card" width="420" />
+</p>
 
-```bash
-python3 -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
-# Set OPENAI_API_KEY securely in your shell or hosting environment.
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+Memory Studio is a photo-to-poster web app: upload an image, choose an art direction, and export a ready-to-download **1080 × 1440 PNG**. The project turns reusable visual prompt systems into a small product workflow instead of a collection of one-off prompts.
+
+> **Project status:** working prototype for local or small private use. Public multi-user hosting is intentionally not enabled by default because every generation uses a paid image API and needs authentication, quotas, rate limits, and storage controls.
+
+## At a glance
+
+| | |
+| --- | --- |
+| **Input** | JPG, PNG, or WebP photo, up to 15 MB / about 24 megapixels |
+| **Output** | Exact 1080 × 1440 portrait PNG |
+| **Experience** | Upload → choose style → generate → preview → download |
+| **Backend** | FastAPI with server-side credentials and image validation |
+| **Image pipeline** | EXIF removal, provider generation, safe-area crop, resampling |
+| **Deployment** | Local Python, Docker, or a Docker-capable host |
+
+## Product flow
+
+```text
+Upload a photo
+   ↓
+Validate file type, size, and dimensions
+   ↓
+Remove EXIF metadata and reduce oversized inputs
+   ↓
+Combine the photo with an editable style template
+   ↓
+Generate with the configured image model
+   ↓
+Center-crop and resample to an exact 3:4 export
+   ↓
+Preview or download the finished poster
 ```
 
-Open `http://127.0.0.1:8000`. API documentation: `/docs`. `.env.example` lists settings; `.env` is not automatically loaded. The API key stays on the server. The default provider is OpenAI Images Edit with `gpt-image-1`; the account needs model access and billing. Each generation is chargeable. The uploaded photo is sent to OpenAI; consider its data policies before uploading personal photos.
+## Poster styles
 
-## Styles
-
-| Style ID | English label | Direction |
+| Style ID | Product label | Direction |
 | --- | --- | --- |
 | `scenes-gathered-zine-v1-3` | Collage Zine | Layered scenes and handmade paper fragments |
 | `photo-to-zine-postcard` | Illustrated Postcard | Original photo paired with a flat illustration |
 | `travel-memory-sticker-card` | Memory Sticker Card | Photo above, illustration below left, stickers below right |
 | `gc-minimal-zine-poster-v0-3` | Minimal Editorial Poster | Restrained palette, typography, and generous whitespace |
 
-These are editable prompt templates in `skills/styles.json`, **not imported copies of the original skills**: their original definitions were unavailable. Replace their prompts with your canonical skill instructions if you have them. The person-and-dog sticker template explicitly requests only two stickers. Other scenes request 5–7. Image-generation instructions are probabilistic; review composition and lettering before printing.
+The styles live in `skills/styles.json` and are editable prompt templates. They are **not imported copies of unavailable third-party skill definitions**. Image generation is probabilistic, so composition and lettering should be reviewed before printing or publishing.
 
-The provider returns a 1024 × 1536 portrait. A centered safe-area crop and resampling creates an exact **1080 × 1440 (3:4)** PNG. The uploaded original is not retained on disk; generated images are stored in `.runtime/generated`. The photo region is recreated by the image model, so it is not a pixel-identical paste of the upload. EXIF metadata is removed before transmission. Generated files have unguessable IDs but no per-user access control; do not treat links as private storage. Delete old files periodically to manage storage.
+## Run locally
+
+Requires Python 3.12.
+
+```bash
+git clone https://github.com/EllieZhangy/my-ai-poster-skills.git
+cd my-ai-poster-skills
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+
+# Store the key in your shell or hosting secret manager.
+export OPENAI_API_KEY="your-key-here"
+
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000`. Interactive API documentation is available at `/docs`. `.env.example` lists the supported settings; `.env` is not loaded automatically.
 
 ## API
 
-- `GET /api/styles` — available styles and English descriptions
-- `GET /api/health` — service and credential-presence status
-- `POST /api/generate` — multipart `image`, `style`, optional `title` (up to 100 characters)
-- `GET /api/images/{id}.png` — preview; add `?download=true` for an attachment
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /api/styles` | List available styles and descriptions |
+| `GET /api/health` | Check service and credential presence |
+| `POST /api/generate` | Generate from multipart `image`, `style`, and optional `title` |
+| `GET /api/images/{id}.png` | Preview an image; add `?download=true` for an attachment |
+
+Example:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/generate \
@@ -43,18 +89,31 @@ curl -X POST http://127.0.0.1:8000/api/generate \
   -F 'title=My Favorite Travel Buddy'
 ```
 
-Uploads: JPG, PNG, WebP; maximum 15 MB / approximately 24 megapixels. Large photos are reduced to a maximum 2048-pixel edge for the provider. Generation may take several minutes; configure deployment request timeouts accordingly.
+## Privacy, cost, and limitations
+
+- The uploaded photo is sent to the configured image provider. Review that provider's data policy before using personal photos.
+- EXIF metadata is removed before transmission, and the uploaded original is not retained on disk by the app.
+- Generated images are stored in `.runtime/generated`. They use unguessable IDs but do not have per-user access control.
+- The photo region is recreated by the image model rather than pasted pixel-for-pixel, so faces, objects, text, and composition can change.
+- Each real generation is chargeable. Protect any public deployment with authentication, quotas, rate limits, and spending controls.
+- A production multi-user version should add per-user storage, a background job queue, monitoring, and cleanup policies.
 
 ## Deployment
 
-Use a Docker-capable host such as Render, Railway, or your own server. Build the included Dockerfile, expose port 8000, and set `OPENAI_API_KEY` in the host's secret settings. Optional settings: `POSTER_IMAGE_MODEL`, `POSTER_OUTPUT_DIR`. For durable downloads, mount a writable persistent disk and point `POSTER_OUTPUT_DIR` to it. This synchronous API is best for small private use. Before sharing publicly, place it behind your hosting provider's authentication and request/concurrency limits to prevent unauthorized paid API calls. Multi-user public operation needs authentication, per-user storage, quota management, and a background job queue.
+### Docker
 
 ```bash
 docker build -t memory-studio .
 docker run --rm -p 8000:8000 --env OPENAI_API_KEY memory-studio
 ```
 
-GitHub stores the source and sample artwork; GitHub Pages alone cannot run the Python API. Deploy the server separately to get a public website URL. No automatic public deployment or image push is performed by the app.
+### Render quick start
+
+[Deploy to Render](https://render.com/deploy?repo=https://github.com/EllieZhangy/my-ai-poster-skills)
+
+The included `render.yaml` creates a paid Starter web service and a 1 GB persistent disk. Review current hosting and model pricing before deployment, enter the API key only through secret settings, and keep the service private or protected until usage controls are in place.
+
+GitHub Pages cannot run this Python API. Use a Docker-capable host such as Render, Railway, or your own server.
 
 ## Validation
 
@@ -62,10 +121,10 @@ GitHub stores the source and sample artwork; GitHub Pages alone cannot run the P
 python -m unittest discover -s tests -v
 ```
 
-Tests exercise upload validation, missing credentials, provider errors, generated-image decoding, exact 3:4 export, and attachment downloads using a mocked provider. Real paid image generation must be checked after configuring your API key.
+The tests cover upload validation, missing credentials, provider failures, generated-image decoding, exact 3:4 export, and attachment downloads with a mocked provider. Real paid generation still needs a manual check after configuring a valid model account.
 
-### Render quick start
+## Selected work
 
-[Deploy to Render](https://render.com/deploy?repo=https://github.com/EllieZhangy/my-ai-poster-skills)
-
-The included `render.yaml` creates a paid Starter web service and 1 GB persistent disk. Review Render's pricing before creating it. Enter `OPENAI_API_KEY` securely during setup. The resulting Render service URL opens the studio; this GitHub repository URL does not. Keep the service private or protect access at your hosting layer before sharing it widely.
+- [AI Driving School](https://elliezhangy.github.io/ai-driving-school/) — a voice- and text-controlled Chinese parking game.
+- [Daily Mood Screen](https://github.com/EllieZhangy/Daily-Mood-Screen) — a personalized macOS wallpaper pipeline using weather, photos, and mood.
+- [Radiology Impression Prediction](https://github.com/EllieZhangy/LLM-Based-Impression-Prediction-from-Radiology-Reports) — an LLM research project for radiology report impression generation.
