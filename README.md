@@ -57,8 +57,8 @@ The styles live in `skills/styles.json` and are editable prompt templates. They 
 Requires Python 3.12.
 
 ```bash
-git clone https://github.com/EllieZhangy/my-ai-poster-skills.git
-cd my-ai-poster-skills
+git clone https://github.com/EllieZhangy/memory-studio.git
+cd memory-studio
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
