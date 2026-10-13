@@ -109,7 +109,7 @@ docker run --rm -p 8000:8000 --env OPENAI_API_KEY memory-studio
 
 ### Render quick start
 
-[Deploy to Render](https://render.com/deploy?repo=https://github.com/EllieZhangy/my-ai-poster-skills)
+[Deploy to Render](https://render.com/deploy?repo=https://github.com/EllieZhangy/memory-studio)
 
 The included `render.yaml` creates a paid Starter web service and a 1 GB persistent disk. Review current hosting and model pricing before deployment, enter the API key only through secret settings, and keep the service private or protected until usage controls are in place.
 
@@ -125,6 +125,7 @@ The tests cover upload validation, missing credentials, provider failures, gener
 
 ## Selected work
 
+- [Ming Oracle](https://ming-oracle-eta.vercel.app/) — a bilingual AI experience combining computed BaZi structure with symbolic personal reflection.
 - [AI Driving School](https://elliezhangy.github.io/ai-driving-school/) — a voice- and text-controlled Chinese parking game.
 - [Daily Mood Screen](https://github.com/EllieZhangy/Daily-Mood-Screen) — a personalized macOS wallpaper pipeline using weather, photos, and mood.
 - [Radiology Impression Prediction](https://github.com/EllieZhangy/LLM-Based-Impression-Prediction-from-Radiology-Reports) — an LLM research project for radiology report impression generation.
