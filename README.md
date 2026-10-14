@@ -52,6 +52,12 @@ Preview or download the finished poster
 
 The styles live in `skills/styles.json` and are editable prompt templates. They are **not imported copies of unavailable third-party skill definitions**. Image generation is probabilistic, so composition and lettering should be reviewed before printing or publishing.
 
+## Copy-and-paste prompt pack / 双语提示词包
+
+[**4 poster styles: English prompts + 中文使用指引**](docs/memory-studio-prompt-pack-zh-en.md)
+
+Upload a photo to a reference-image-capable image tool and copy a complete prompt. The pack includes Chinese translations, suitable photo types, optional style adjustments, and the existing repository example. These are ordinary prompt templates, not an installable Agent Skill; results vary across models. Using the prompt pack does not require deploying this app.
+
 ## Run locally
 
 Requires Python 3.12.
