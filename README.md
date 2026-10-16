@@ -12,6 +12,16 @@ Memory Studio is a photo-to-poster web app: upload an image, choose an art direc
 
 > **Project status:** working prototype for local or small private use. Public multi-user hosting is intentionally not enabled by default because every generation uses a paid image API and needs authentication, quotas, rate limits, and storage controls.
 
+## Copy-and-paste prompt pack / 双语提示词包
+
+**[Get the 4-style bilingual poster prompt pack / 获取4套双语海报提示词](https://github.com/EllieZhangy/memory-studio/blob/docs/bilingual-poster-prompt-pack/docs/memory-studio-prompt-pack-zh-en.md)**
+
+Includes Collage Zine, Illustrated Postcard, Memory Sticker Card, and Minimal Editorial Poster, with complete English prompts, Chinese instructions, photo recommendations, and optional style adjustments.
+
+Upload a photo to an image tool that supports reference images, then copy a prompt—no local deployment required. These are **copy-and-paste prompt templates, not an installable Agent Skill**; results vary across models. The resource currently lives on the dedicated documentation branch linked above.
+
+包含完整英文 Prompt、中文使用指引、选图建议和可调整参数。打开链接即可复制，也可在文件页面下载 Markdown。无需部署本应用；所用图像工具可能收费。
+
 ## At a glance
 
 | | |
